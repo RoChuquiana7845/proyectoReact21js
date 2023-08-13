@@ -50,7 +50,14 @@ export const CardsProvider = ({ children }) => {
     return valor;
   };
 
-  const getCard = async (deck, plantarse=false, numcard=2, init = false) => {
+  const Plantarse = (parar, array) => { 
+    if(!parar) { 
+      setCardUser1([...cardUser1, ...array]);
+      setUser1Points(user1points+SumValue(array));
+    }
+  }
+
+  const getCard = async (deck, parar=false, numcard=2, init = false) => {
     try {
       const response = await getInfoCard(deck, numcard);
         const cardsImg = [];
@@ -87,12 +94,9 @@ export const CardsProvider = ({ children }) => {
             console.log(valor);
             setUser2Points(user2points+valor);
           } 
-          if (!plantarse) { 
-              setCardUser1([...cardUser1, ...carduser1]);
-              setUser1Points(user1points+SumValue(carduser1));
-        } else {
-          getCard(deck);
-        }
+          Plantarse(parar, carduser1);
+      } else {
+        getCard(deck);
       }
     } catch (error) {
       console.error(error);
@@ -111,6 +115,8 @@ export const CardsProvider = ({ children }) => {
   const Winner = () => { 
     if (user1points >=21 && user2points >= 21) {
       alert("Empate");
+      CleanState();
+      return;
     } else if (user1points >= 21) { 
       alert('Gano el usuario 2');
       setuser2CounterWin(user2CounterWin+1);
